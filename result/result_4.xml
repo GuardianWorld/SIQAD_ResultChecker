@@ -4,8 +4,8 @@
         <engine>SimAnneal</engine>
         <version>TBD</version>
         <return_code>0</return_code>
-        <timestamp>Tue Oct 24 19:27:57 2023</timestamp>
-        <time_elapsed_s>1.129861</time_elapsed_s>
+        <timestamp>Wed Oct 25 13:05:46 2023</timestamp>
+        <time_elapsed_s>1.074286</time_elapsed_s>
     </eng_info>
     <sim_params>
         <T_e_inv_point>0.09995000064373016</T_e_inv_point>
@@ -28,139 +28,114 @@
         <v_freeze_threshold>4</v_freeze_threshold>
     </sim_params>
     <physloc>
+        <dbdot x="-280.320000" y="655.050000"/>
+        <dbdot x="-280.320000" y="647.370000"/>
+        <dbdot x="-280.320000" y="629.760000"/>
+        <dbdot x="-280.320000" y="622.080000"/>
+        <dbdot x="-291.840000" y="606.720000"/>
+        <dbdot x="-268.800000" y="606.720000"/>
+        <dbdot x="-299.520000" y="599.040000"/>
+        <dbdot x="-261.120000" y="599.040000"/>
         <dbdot x="-218.880000" y="486.090000"/>
         <dbdot x="-226.560000" y="478.410000"/>
         <dbdot x="-203.520000" y="493.770000"/>
         <dbdot x="-195.840000" y="501.450000"/>
-        <dbdot x="-295.680000" y="685.770000"/>
-        <dbdot x="-341.760000" y="591.360000"/>
-        <dbdot x="-349.440000" y="583.680000"/>
-        <dbdot x="-249.600000" y="591.360000"/>
-        <dbdot x="-241.920000" y="583.680000"/>
+        <dbdot x="-280.320000" y="670.410000"/>
+        <dbdot x="-203.520000" y="399.360000"/>
+        <dbdot x="-226.560000" y="460.800000"/>
+        <dbdot x="-226.560000" y="430.080000"/>
+        <dbdot x="-211.200000" y="407.040000"/>
+        <dbdot x="-226.560000" y="453.120000"/>
+        <dbdot x="-241.920000" y="407.040000"/>
+        <dbdot x="-249.600000" y="399.360000"/>
+        <dbdot x="-226.560000" y="437.760000"/>
+        <dbdot x="-314.880000" y="591.360000"/>
+        <dbdot x="-322.560000" y="583.680000"/>
+        <dbdot x="-245.760000" y="591.360000"/>
+        <dbdot x="-238.080000" y="583.680000"/>
         <dbdot x="-180.480000" y="516.810000"/>
         <dbdot x="-157.440000" y="516.810000"/>
         <dbdot x="-157.440000" y="537.600000"/>
         <dbdot x="-180.480000" y="537.600000"/>
-        <dbdot x="-195.840000" y="552.960000"/>
-        <dbdot x="-203.520000" y="560.640000"/>
-        <dbdot x="-218.880000" y="568.320000"/>
-        <dbdot x="-226.560000" y="576.000000"/>
+        <dbdot x="-192.000000" y="552.960000"/>
+        <dbdot x="-199.680000" y="560.640000"/>
+        <dbdot x="-215.040000" y="568.320000"/>
+        <dbdot x="-222.720000" y="576.000000"/>
         <dbdot x="-142.080000" y="501.450000"/>
         <dbdot x="-142.080000" y="552.960000"/>
-        <dbdot x="-253.440000" y="391.680000"/>
-        <dbdot x="-199.680000" y="391.680000"/>
-        <dbdot x="-226.560000" y="453.120000"/>
-        <dbdot x="-226.560000" y="460.800000"/>
-        <dbdot x="-226.560000" y="437.760000"/>
-        <dbdot x="-207.360000" y="399.360000"/>
-        <dbdot x="-245.760000" y="399.360000"/>
-        <dbdot x="-226.560000" y="430.080000"/>
-        <dbdot x="-226.560000" y="409.290000"/>
-        <dbdot x="-322.560000" y="599.040000"/>
-        <dbdot x="-295.680000" y="616.650000"/>
-        <dbdot x="-295.680000" y="668.160000"/>
-        <dbdot x="-268.800000" y="599.040000"/>
-        <dbdot x="-314.880000" y="606.720000"/>
-        <dbdot x="-276.480000" y="606.720000"/>
-        <dbdot x="-295.680000" y="645.120000"/>
-        <dbdot x="-295.680000" y="660.480000"/>
-        <dbdot x="-295.680000" y="637.440000"/>
-        <dbdot x="-130.560000" y="537.600000"/>
-        <dbdot x="-195.840000" y="524.490000"/>
+        <dbdot x="-226.560000" y="414.720000"/>
+        <dbdot x="-130.560000" y="539.850000"/>
+        <dbdot x="-330.240000" y="576.000000"/>
     </physloc>
     <elec_dist>
-        <dist energy="1.787710" count="1000" physically_valid="0" state_count="3">-00--0--00-0-0-0-----0--000--0000-0---0</dist>
-        <dist energy="1.787050" count="1000" physically_valid="0" state_count="3">-00--0--0000-0-0-----0--000-----00-00-0</dist>
-        <dist energy="3.028170" count="2000" physically_valid="0" state_count="3">0--0----00-0-0-0-----0--0-0-----00-00--</dist>
-        <dist energy="2.399524" count="1" physically_valid="0" state_count="3">0--0-0-0-0-0-0--0-----0000-----00--00--</dist>
-        <dist energy="2.165424" count="1" physically_valid="0" state_count="3">-0-0-0--0-00-0--0-----0-000----00--00-0</dist>
-        <dist energy="2.091420" count="1" physically_valid="0" state_count="3">0--0-0-0---00-0-0-----0000----0-00--0-0</dist>
-        <dist energy="2.401946" count="1" physically_valid="0" state_count="3">0--0-0--00-0-0--0----0-000------00-00--</dist>
-        <dist energy="2.121794" count="1" physically_valid="0" state_count="3">-00--0--0--00-00------0000-----00--00-0</dist>
-        <dist energy="2.120467" count="1" physically_valid="0" state_count="3">-00--0-0--00-0-0-----0--000---0-00--0-0</dist>
-        <dist energy="2.085975" count="1" physically_valid="0" state_count="3">-00--0-0-0-0-0-0------0000----0-000---0</dist>
-        <dist energy="2.097488" count="1" physically_valid="0" state_count="3">0--0-0-0-0-00-00-----0-000------0000---</dist>
-        <dist energy="2.128980" count="1" physically_valid="0" state_count="3">0-0--0--0-00--00-----0-000------00-00-0</dist>
-        <dist energy="2.142170" count="1" physically_valid="0" state_count="3">0-0--0-0---00-0-0-----0-000---0-00--0-0</dist>
-        <dist energy="2.668585" count="39996" physically_valid="0" state_count="3">0--0----00-0-0-0------0000------00-00--</dist>
-        <dist energy="2.128894" count="1" physically_valid="0" state_count="3">-0-0-0-0---00-0-0----0-000-----00--00-0</dist>
-        <dist energy="2.070958" count="1" physically_valid="0" state_count="3">0-0--0--00-00-00------0000------00-00--</dist>
-        <dist energy="2.112153" count="1" physically_valid="0" state_count="3">-00-----00-00-00------0000--0000--0----</dist>
-        <dist energy="2.081042" count="1" physically_valid="0" state_count="3">-00--0--000-00-0-----0-000----0-000----</dist>
-        <dist energy="2.101886" count="1" physically_valid="0" state_count="3">-00--0--0-0-0-0-0----0--000----00--00-0</dist>
-        <dist energy="2.071911" count="1" physically_valid="0" state_count="3">-00--0-0-0-0--0-0----0--000-----0000--0</dist>
-        <dist energy="2.425469" count="1" physically_valid="0" state_count="3">0-0----0-00-0-0-0-----0000--0-0--0--0--</dist>
-        <dist energy="2.093482" count="2" physically_valid="0" state_count="3">-00--0-0-00-0-00-----0--000-----00-00--</dist>
-        <dist energy="2.045446" count="5000" physically_valid="1" state_count="3">-00--0--00-0-0-0-----0--000-----00-00-0</dist>
-        <dist energy="2.454247" count="1" physically_valid="0" state_count="3">0-0-----000-0-00------0-000-0-0--00----</dist>
-        <dist energy="2.109558" count="1" physically_valid="0" state_count="3">0--0-0-0-0-00-00-----0--000---0-00--0--</dist>
-        <dist energy="2.432519" count="1" physically_valid="0" state_count="3">0--0-0-0---0-0-0------0000----000-0---0</dist>
-        <dist energy="2.051068" count="1" physically_valid="0" state_count="3">-00--0--00-0-0-0-----0--000----00--00-0</dist>
-        <dist energy="2.082093" count="1" physically_valid="0" state_count="3">-00--0--00-0-0-0------0-000-----00-00-0</dist>
-        <dist energy="2.444180" count="1" physically_valid="0" state_count="3">-00----0--0-00-0-----0--000-0-0--00---0</dist>
-        <dist energy="2.110856" count="1" physically_valid="0" state_count="3">0-0--0--000-0-00-----0-000------0000---</dist>
-        <dist energy="2.109906" count="1" physically_valid="0" state_count="3">-00--0--0-0-0-0-0----0-000------0000--0</dist>
-        <dist energy="2.196907" count="1" physically_valid="0" state_count="3">0-0--0-0---00-0-0----0--000--000--0---0</dist>
-        <dist energy="2.104706" count="1" physically_valid="0" state_count="3">0--0-0-0---00-00------0000----0-000---0</dist>
-        <dist energy="2.670260" count="8" physically_valid="0" state_count="3">0--0----00-0-0-0------0000--0----0-00--</dist>
-        <dist energy="2.402862" count="1" physically_valid="0" state_count="3">0-0--0--00-0-0-0-----0-000----000-0----</dist>
-        <dist energy="2.085138" count="1" physically_valid="0" state_count="3">-00--0-0-00-0-0-0----0-000------0000---</dist>
-        <dist energy="2.383755" count="1" physically_valid="0" state_count="3">0-0----0-0-00-0-0-----0000--0----0-00--</dist>
-        <dist energy="2.041842" count="15020" physically_valid="1" state_count="3">0--0-0-0-0-00-0-0-----0000------00-00--</dist>
-        <dist energy="1.790500" count="1000" physically_valid="0" state_count="3">0--0-0-0-0-00-0-0----00-000-----00-00--</dist>
-        <dist energy="2.076141" count="1" physically_valid="0" state_count="3">-00--0-0-0-00-0-0-----0000----0-000----</dist>
-        <dist energy="2.054831" count="1" physically_valid="1" state_count="3">-00--0--00-0-0-0-----0--000---0-000---0</dist>
-        <dist energy="2.101855" count="1" physically_valid="0" state_count="3">0-0--0-0--00-0-0------0000------00-00-0</dist>
-        <dist energy="2.126818" count="1" physically_valid="0" state_count="3">-00--0--000---00-----0-000----0-000---0</dist>
-        <dist energy="2.103041" count="1" physically_valid="0" state_count="3">0--0-0-0--00--00------0000------00-00-0</dist>
-        <dist energy="2.342359" count="54018" physically_valid="1" state_count="3">0--0-0--00-0-0-0------0000------00-00--</dist>
-        <dist energy="2.060748" count="3" physically_valid="0" state_count="3">0--0-0--00-00-00------0000-----00--00--</dist>
-        <dist energy="2.096871" count="1" physically_valid="0" state_count="3">0--0-0--000-0-00-----0--000---0-000----</dist>
-        <dist energy="2.066276" count="1" physically_valid="0" state_count="3">-00--0--00-00-00-----0--000-----00-00--</dist>
-        <dist energy="2.453925" count="1" physically_valid="0" state_count="3">-00----0-0-0-0-0-----0-000--0-00----0-0</dist>
-        <dist energy="2.140543" count="1" physically_valid="0" state_count="3">-00--0--0-0-0-0-0-----0-000-----0000--0</dist>
-        <dist energy="2.140286" count="1" physically_valid="0" state_count="3">-00--0-0-0-0--00------0000----000-0---0</dist>
-        <dist energy="2.102099" count="1" physically_valid="0" state_count="3">-0-0-0-0-00-0-0-0----0-000----0-000----</dist>
-        <dist energy="2.114352" count="1" physically_valid="0" state_count="3">-00--0-0-0-0-0-0-----0--000---000---0-0</dist>
-        <dist energy="3.022990" count="9000" physically_valid="0" state_count="3">0--0----00-0-0-0------000-------00-00--</dist>
-        <dist energy="2.461256" count="1" physically_valid="0" state_count="3">-00--0-0-0-00-0-0----0-0---0---00--00--</dist>
-        <dist energy="3.044160" count="1" physically_valid="0" state_count="3">0--0----00-0-0-0------00---00----0-00--</dist>
-        <dist energy="2.080558" count="1" physically_valid="0" state_count="3">-0-0-0-0-0-00-0-0----0--000---0-000----</dist>
-        <dist energy="2.118645" count="1" physically_valid="0" state_count="3">-00-----00-0--0-0----0-000--0000--0---0</dist>
-        <dist energy="2.397623" count="1" physically_valid="0" state_count="3">-00-----00-0-0-0-----0--000-0000--0----</dist>
-        <dist energy="2.122717" count="1" physically_valid="0" state_count="3">-00--0--0--00-00-----0--000---000-0---0</dist>
-        <dist energy="2.066196" count="1" physically_valid="0" state_count="3">-00--0--000-00-0-----0--000-----00-00--</dist>
-        <dist energy="2.110076" count="1" physically_valid="0" state_count="3">-00-----00-0--00-----0-000--0000--0---0</dist>
-        <dist energy="2.096572" count="1" physically_valid="0" state_count="3">-00--0--0-00-0-0------0000-----00--00-0</dist>
-        <dist energy="2.079868" count="1" physically_valid="0" state_count="3">-00--0-0-00-0-0-0----0--000-----0000---</dist>
-        <dist energy="2.468545" count="1" physically_valid="0" state_count="3">-0-0----000-0-0-0-----0000--0-0--0--0--</dist>
-        <dist energy="2.089533" count="1" physically_valid="0" state_count="3">-00--0--0-00-0-0-----0--000-----0000--0</dist>
-        <dist energy="2.081334" count="1" physically_valid="0" state_count="3">0--0-0--00-00-00-----0-000----0-000----</dist>
-        <dist energy="2.429018" count="1" physically_valid="0" state_count="3">-0-0-0--00-0-0--0----0-000-----00--00--</dist>
-        <dist energy="2.061452" count="1" physically_valid="0" state_count="3">0--0-0-0--0-0-0-0-----0000------00-00-0</dist>
-        <dist energy="2.121658" count="1" physically_valid="0" state_count="3">0-0--0-0-0-00-00------0-000-----0000---</dist>
-        <dist energy="2.371846" count="1" physically_valid="0" state_count="3">0--0-0--00-0-0-0-----0--000-----0000---</dist>
-        <dist energy="2.433466" count="1" physically_valid="0" state_count="3">-0-0-0--00-0-0--0----0-000------0000---</dist>
-        <dist energy="2.107243" count="1" physically_valid="0" state_count="3">0-0--0--00-0--00------0-000-----00-00-0</dist>
-        <dist energy="2.157930" count="1" physically_valid="0" state_count="3">0--0-0-0--0-0-00-----0--000---000---0-0</dist>
-        <dist energy="2.082548" count="1" physically_valid="0" state_count="3">-00--0--00-0--0-0----0-000------00-00-0</dist>
-        <dist energy="2.440045" count="1" physically_valid="0" state_count="3">0--0----00-00-00-----0-000--0-00----0--</dist>
-        <dist energy="2.106688" count="1" physically_valid="0" state_count="3">-00--0--0-0-00-0-----0--000----00-00--0</dist>
-        <dist energy="2.122766" count="1" physically_valid="0" state_count="3">0-0--0--0-0-0-00------0000----0-00--0-0</dist>
-        <dist energy="2.485056" count="1" physically_valid="0" state_count="3">0-0--0--00-0--0-0----0-0---0----0000--0</dist>
-        <dist energy="2.116003" count="1" physically_valid="0" state_count="3">-0-0-0--000-0-00------0000-----00--00--</dist>
-        <dist energy="2.139478" count="1" physically_valid="0" state_count="3">-0-0-0--0-00--0-0----0-000------0000--0</dist>
-        <dist energy="2.118097" count="1" physically_valid="0" state_count="3">0-0--0--00-00-00-----0-000----000---0--</dist>
-        <dist energy="2.410887" count="1" physically_valid="0" state_count="3">0--0-0-0---0-0-0-----0--000-----00-00-0</dist>
-        <dist energy="2.089868" count="1" physically_valid="0" state_count="3">0-0--0--000-0-0-0-----0000------00-00--</dist>
-        <dist energy="2.136715" count="1" physically_valid="0" state_count="3">0--0-0--0-00--0-0----0-000----0-00--0-0</dist>
-        <dist energy="2.426389" count="1" physically_valid="0" state_count="3">0--0-0--0-0-00-0-----0--000---000---0--</dist>
-        <dist energy="2.147950" count="1" physically_valid="0" state_count="3">0-0-----0-0-0-00-----0--000-00-0--00--0</dist>
-        <dist energy="2.087293" count="1" physically_valid="0" state_count="3">-00--0-0--0-0-0-0----0--000-----0000--0</dist>
-        <dist energy="2.111988" count="1" physically_valid="0" state_count="3">0--0-0-0-00-0-00-----0-000----0-000----</dist>
-        <dist energy="2.093117" count="1" physically_valid="0" state_count="3">0--0-0--0--00-0-0-----0000----0-000---0</dist>
-        <dist energy="2.135200" count="1" physically_valid="0" state_count="3">-00----0--0-0-0-0----0--000-0000--0---0</dist>
-        <dist energy="2.146249" count="1" physically_valid="0" state_count="3">-00--0-0--00-0--0-----0-000---0-000---0</dist>
-        <dist energy="2.429211" count="1" physically_valid="0" state_count="3">0--0-0--000--0-0------0-000----00-00---</dist>
+        <dist energy="2.338646" count="319" physically_valid="0" state_count="3">-0-0-00-0--0---0000---00--0-0-0-0-----</dist>
+        <dist energy="2.678790" count="1000" physically_valid="0" state_count="3">-0-0-00-0--0---0000---00---0-0-0------</dist>
+        <dist energy="2.045543" count="1000" physically_valid="0" state_count="3">0-0-00---00----0000---00-0-00-0-0-----</dist>
+        <dist energy="2.330246" count="5001" physically_valid="1" state_count="3">0-0-00---00----0000---00-0-0-0-0------</dist>
+        <dist energy="2.402124" count="1" physically_valid="0" state_count="3">0--00--0-00-----000-0-0-00-0--00------</dist>
+        <dist energy="2.343686" count="1" physically_valid="0" state_count="3">-0-000---00----0000---00-0-0-0--0-----</dist>
+        <dist energy="2.377578" count="1" physically_valid="0" state_count="3">0--0-00-0-0---0-0-0-0-00-0-0-0--0-----</dist>
+        <dist energy="2.041030" count="5000" physically_valid="0" state_count="3">-0-0-00--00----0000---00-0-00-0-0-----</dist>
+        <dist energy="2.365146" count="1" physically_valid="0" state_count="3">0-0--00-0--0--0-0-0-0-00---00-0-0-----</dist>
+        <dist energy="2.351874" count="1" physically_valid="0" state_count="3">-0-0-00-0-0----0000---0-00-0-0-0------</dist>
+        <dist energy="2.372494" count="1" physically_valid="0" state_count="3">0-0-00--0--0----000-0-00--0-0-0-0-----</dist>
+        <dist energy="2.397120" count="1" physically_valid="0" state_count="3">-0-000---0-0----000-0-00---00-0-0-----</dist>
+        <dist energy="2.338523" count="683" physically_valid="1" state_count="3">-0-0-00-0--0---0000---00---00-0-0-----</dist>
+        <dist energy="2.677954" count="16000" physically_valid="0" state_count="3">-0-00--00--0---0000---0-0--0-0-0------</dist>
+        <dist energy="2.333503" count="1" physically_valid="0" state_count="3">0-0-00---00----0000---00-0-0-0--0-----</dist>
+        <dist energy="2.377510" count="1" physically_valid="0" state_count="3">0-0-00--0--0---0000---0-0-0-00-0------</dist>
+        <dist energy="2.331115" count="1" physically_valid="0" state_count="3">0--0-00--00----0000---00-0-0-0-0------</dist>
+        <dist energy="2.029003" count="34000" physically_valid="0" state_count="3">0-00--00-00----0000---0-00-0-0-0------</dist>
+        <dist energy="2.375159" count="1" physically_valid="0" state_count="3">0-0-00---00----0000--0-0-0-0-0--0-----</dist>
+        <dist energy="2.336156" count="1" physically_valid="0" state_count="3">0--0-00--00----0000---00-0-0--0-0-----</dist>
+        <dist energy="2.325204" count="40066" physically_valid="1" state_count="3">-0-0-00--00----0000---00-0-0-0-0------</dist>
+        <dist energy="2.336375" count="1" physically_valid="1" state_count="3">-0-0-00--00----0000---00--0-0-0-0-----</dist>
+        <dist energy="2.364554" count="1" physically_valid="0" state_count="3">-0-000---0-0---0000---00--0-0-0-0-----</dist>
+        <dist energy="2.334387" count="1" physically_valid="0" state_count="3">0-0-00---00----0000---0-00-0-0-0------</dist>
+        <dist energy="2.389722" count="1" physically_valid="0" state_count="3">-0-00--00--0---0000---0-00-0--00------</dist>
+        <dist energy="2.356590" count="1" physically_valid="0" state_count="3">0--000--0--0---0000---00--0-0-0-0-----</dist>
+        <dist energy="1.770543" count="2000" physically_valid="0" state_count="3">0-00--00-00----0000---0-0000-0-0------</dist>
+        <dist energy="2.406527" count="1" physically_valid="0" state_count="3">-0-000--0-0----0000---00---000--0-----</dist>
+        <dist energy="1.776523" count="887" physically_valid="0" state_count="3">0-00--000--0--000-0-0-0-00-0-0-0------</dist>
+        <dist energy="2.367261" count="1" physically_valid="0" state_count="3">0-0-00---00----0000---00--0-00--0-----</dist>
+        <dist energy="2.369155" count="1" physically_valid="0" state_count="3">-0-0-00--00---000-0---00-0-0-0--0-----</dist>
+        <dist energy="2.362801" count="1" physically_valid="0" state_count="3">-0-000--0-0----0000---00-0-0-0-0------</dist>
+        <dist energy="2.384696" count="1" physically_valid="0" state_count="3">-0-0--00-0-0---0000---00---00-0-0-----</dist>
+        <dist energy="2.382466" count="1" physically_valid="0" state_count="3">0--0--000--0--000-0---0-00-0-0-0------</dist>
+        <dist energy="2.343228" count="1" physically_valid="1" state_count="3">0-0-00--0--0---0000---00---00-0-0-----</dist>
+        <dist energy="2.385942" count="1" physically_valid="0" state_count="3">0--000---00---000-0---0-00-0-0-0------</dist>
+        <dist energy="2.379024" count="1" physically_valid="0" state_count="3">0--0-00-0--0--0-0-0-0-00-0-0-0--0-----</dist>
+        <dist energy="2.376561" count="1" physically_valid="0" state_count="3">0--0-00-0-0---000-0---0-00-0-0-0------</dist>
+        <dist energy="2.404431" count="1" physically_valid="0" state_count="3">0--0-00--0-0----000-0-0-00-0-0-0------</dist>
+        <dist energy="2.340223" count="1" physically_valid="0" state_count="3">0-0--00--00----0000---00-0-0-0--0-----</dist>
+        <dist energy="2.410003" count="1" physically_valid="0" state_count="3">0--000--0-0----0000---0-000--0-0------</dist>
+        <dist energy="2.328385" count="2" physically_valid="0" state_count="3">-0-0--00-00----0000---0-00-0-0-0------</dist>
+        <dist energy="1.776973" count="113" physically_valid="0" state_count="3">0-00--000-0---000-0-0-0-00-0-0-0------</dist>
+        <dist energy="2.352933" count="1" physically_valid="0" state_count="3">-0-0-00-0--0--000-0---00--0-0-0-0-----</dist>
+        <dist energy="2.361398" count="1" physically_valid="0" state_count="3">0-0--00--0-0---0000---00---00-0-0-----</dist>
+        <dist energy="2.325878" count="19001" physically_valid="1" state_count="3">-0-00--0-00----0000---0-00-0-0-0------</dist>
+        <dist energy="2.352604" count="2" physically_valid="0" state_count="3">-0-0-00-0--0--000-0---00---00-0-0-----</dist>
+        <dist energy="2.410658" count="1" physically_valid="0" state_count="3">-0-0--00-00---0-0-0-0-00-0-0--0-0-----</dist>
+        <dist energy="2.356387" count="1" physically_valid="0" state_count="3">-0-0-00-0--0---0000---00-0-0--0-0-----</dist>
+        <dist energy="2.349388" count="1" physically_valid="0" state_count="3">-0-0-00--0-0---0000---00--0-0-0-0-----</dist>
+        <dist energy="2.330567" count="1" physically_valid="0" state_count="3">-0-0-00--00----0000---00-0-0--0-0-----</dist>
+        <dist energy="2.328692" count="1" physically_valid="0" state_count="3">-0-0-00--00----0000---00-0-0-0--0-----</dist>
+        <dist energy="2.341071" count="1" physically_valid="1" state_count="3">0-0-00---00----0000---00--0-0-0-0-----</dist>
+        <dist energy="2.357610" count="1" physically_valid="0" state_count="3">0-0-00--0--0--000-0---00--0-0-0-0-----</dist>
+        <dist energy="2.335361" count="1" physically_valid="0" state_count="3">0--0-00--00----0000---0-00-0-0-0------</dist>
+        <dist energy="2.355527" count="2" physically_valid="0" state_count="3">-0-00--00--0---0000---0-00-0-0-0------</dist>
+        <dist energy="2.371876" count="1" physically_valid="0" state_count="3">-0-0-00--00----0000---00---00-00------</dist>
+        <dist energy="2.370785" count="1" physically_valid="0" state_count="3">0-0-00---00---000-0---00-0-0-0-0------</dist>
+        <dist energy="2.347643" count="1" physically_valid="0" state_count="3">0-0--00--00----0000---00--0-0-0-0-----</dist>
+        <dist energy="2.373584" count="1" physically_valid="0" state_count="3">0-0--00--00----0000---00--00-0-0------</dist>
+        <dist energy="2.332540" count="2" physically_valid="0" state_count="3">0--00--0-00----0000---0-00-0-0-0------</dist>
+        <dist energy="2.368374" count="1" physically_valid="0" state_count="3">0-0-00---00-----000-0-00-0-0--0-0-----</dist>
+        <dist energy="1.772822" count="1000" physically_valid="0" state_count="3">0-00-00--00----0000---00-0-00-0-0-----</dist>
+        <dist energy="2.377026" count="1" physically_valid="0" state_count="3">-0-0-00-0--0---0000---0-0--00-0-0-----</dist>
+        <dist energy="2.378429" count="1" physically_valid="0" state_count="3">0-0-00--0-0---0-0-0-0-0-00-0-0-0------</dist>
+        <dist energy="2.352120" count="1" physically_valid="0" state_count="3">0-0--00--00----0000---00---00-0-0-----</dist>
+        <dist energy="2.372192" count="1" physically_valid="0" state_count="3">0--0-00--0-0---0000---0-00-0-0-0------</dist>
+        <dist energy="1.773726" count="2000" physically_valid="0" state_count="3">-0-0-00-0--0--000-0-0-00--000-0-0-----</dist>
+        <dist energy="2.377825" count="1" physically_valid="0" state_count="3">0-0-00--0-0---0-0-0-0-00-0-0--0-0-----</dist>
     </elec_dist>
 </sim_out>

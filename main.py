@@ -1,13 +1,15 @@
 import xml.etree.ElementTree as ET
 import itertools
-import copy
+from copy import deepcopy
 import os
 import math
 import subprocess
+from datetime import datetime
 from tabulate import tabulate
 
 
 def change_header(file):
+    print("Making modified Header file for Simulation")
     tree = ET.parse(file)
     root = tree.getroot()
     
@@ -15,6 +17,10 @@ def change_header(file):
     file_purpose = program.find("file_purpose")
     file_purpose.text = "simulation"
     new_sim_params = ET.Element("sim_params")
+    date_element = program.find(".//date")
+    current_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    date_element.text = current_date
+
 
     new_sim_params_str = """
     <sim_params>
@@ -22,7 +28,7 @@ def change_header(file):
         <T_init>500</T_init>
         <T_min>2</T_min>
         <T_schedule>exponential</T_schedule>
-        <anneal_cycles>10000</anneal_cycles>
+        <anneal_cycles>20000</anneal_cycles>
         <debye_length>5</debye_length>
         <eps_r>5.599999904632568</eps_r>
         <hop_attempt_factor>5</hop_attempt_factor>
@@ -56,7 +62,7 @@ def change_header(file):
 
 def call_simmaneal(file, result_name):
     resultPath = " ./result/" + result_name
-    command = "./simanneal/simanneal " + file + resultPath
+    command = " /usr/lib/siqad/plugins/simanneal/simanneal " + file + resultPath
     print("Calling Simanneal for file: " + file + " please wait!")
     subprocess.run(command, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
@@ -114,6 +120,7 @@ def remove_dbdots_by_latcoord(xml_tree, coordinates):
     return xml_tree
 
 def read_result(file, output_coordinates):
+    print("file: " + file)
     tree = ET.parse(file)
     root = tree.getroot()
     indexes = []
@@ -129,7 +136,6 @@ def read_result(file, output_coordinates):
             #print(x_output, y_output, x, y)
             if(x == x_output and y == y_output):
                 indexes.append([i, output])
-                #print(i)
                 break
         i += 1
 
@@ -148,18 +154,16 @@ def read_result(file, output_coordinates):
         if energy < lowest_energy:
             biggest = [energy, count, physically_valid, state_count, symbol]
             lowest_energy = energy
-        
+    
     symbol = biggest[4]
     
     symbol_list = []
 
     for i, output in indexes:
-        symbol_list.append([output[3], symbol[i]])
+        symbol_list.append([output[3], symbol[i], energy])
         
 
     return symbol_list
-
-    
 
 def combinations(dbdot_coordinates, output_coordinates, file):
     tree = ET.parse(file)
@@ -180,7 +184,7 @@ def combinations(dbdot_coordinates, output_coordinates, file):
 
     for combination in combinations_to_remove:
         # Make a copy of the original XML tree
-        modified_tree = ET.ElementTree(tree.getroot())
+        modified_tree = deepcopy(tree)
         opposite_combination = [coord for coord in dbdot_coordinates if coord not in combination]
 
         modified_tree = remove_dbdots_by_latcoord(modified_tree, combination)
@@ -191,17 +195,56 @@ def combinations(dbdot_coordinates, output_coordinates, file):
         result = read_result(f'./result/result_{i}.xml', output_coordinates)
 
         opposite_names = [name for _, _, _, name in opposite_combination]
-        result_names = [name_output for name_output, _ in result]
-        result_values = [value for _, value in result]
-        truth_table.append([opposite_names, result_names, result_values])
+        #result_names, result_values, result_energy = zip(*[(name_output, value, energy) for name_output, value, energy in result])
+        result_names = [name_output for name_output, _, _ in result]
+        result_values = [value for _, value, _ in result]
+        result_energy = [energy for _, _, energy in result]
+        result_name = f'result_{i}.xml'
+        truth_table.append([result_name,opposite_names, result_names, result_values, result_energy])
         i += 1
 
     return truth_table
 
+def list_files_in_directory(directory):
+    sqd_files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f)) and f.endswith('.sqd')]
+    return sqd_files
 
-#To change the file to be executed, just change the header and the txt to be called.
-change_header('gates/NAND-NAND.sqd')
-inputs, outputs = grab_DBs('gates/NAND-NAND.txt')
-truth_table = combinations(inputs, outputs, 'modified_file.xml')
-truth_table.reverse()
-print(tabulate(truth_table, headers=["Inputs", "Outputs", "Result Values"], tablefmt="pretty"))
+def main():
+    directory = 'gates/'  # Replace with your directory path
+
+    while(True):
+        print("GATE CHECKER by Emanuel\n")
+        files = list_files_in_directory(directory)
+        if not files:
+            print("No files found in the directory.")
+            return
+        print("Available files:")
+        for i, file in enumerate(files, 1):
+            print(f"{i}. {file}")
+
+        print("\nEnter 0 to Exit")
+        choice = input("Enter the number of the file you want to execute: ")
+
+        try:
+            choice = int(choice)
+            if choice == 0:
+                return
+            if 1 <= choice <= len(files):
+                selected_file = files[choice - 1]
+                selected_txt = files[choice - 1].replace('.sqd', '.txt')
+                full_path = os.path.join(directory, selected_file)
+                full_txt_path = os.path.join(directory, selected_txt)
+                print(f"Executing file: {selected_file} + {selected_txt}")
+                change_header(full_path)
+                inputs, outputs = grab_DBs(full_txt_path)
+                truth_table = combinations(inputs, outputs, 'modified_file.xml')
+                #truth_table.reverse()
+                
+                print(tabulate(truth_table, headers=["File", "Inputs", "Outputs", "State", "Energy"], tablefmt="pretty"))
+            else:
+                print("Invalid choice.")
+        except ValueError:
+            print("Invalid input. Please enter a valid number.")
+
+if __name__ == "__main__":
+    main()
