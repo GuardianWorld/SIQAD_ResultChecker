@@ -62,7 +62,7 @@ def change_header(file):
 
 def call_simmaneal(file, result_name):
     resultPath = " ./result/" + result_name
-    command = " /usr/lib/siqad/plugins/simanneal/simanneal " + file + resultPath
+    command = " ./simanneal/simanneal " + file + resultPath
     print("Calling Simanneal for file: " + file + " please wait!")
     subprocess.run(command, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
