@@ -1,0 +1,7 @@
+4
+1
+-66 49 1 input_and1_0
+-48 49 1 input_and1_1
+-102 49 1 input_and2_0
+-84 49 1 input_and2_1
+-75 87 0 output_0

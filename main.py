@@ -2,6 +2,7 @@ import xml.etree.ElementTree as ET
 import itertools
 from copy import deepcopy
 import os
+import sys
 import math
 import subprocess
 from datetime import datetime
@@ -9,7 +10,8 @@ from tabulate import tabulate
 
 
 def change_header(file):
-    print("Making modified Header file for Simulation")
+    print("Making modified Header file for Simulation", end = '\r')
+    sys.stdout.flush()
     tree = ET.parse(file)
     root = tree.getroot()
     
@@ -28,7 +30,7 @@ def change_header(file):
         <T_init>500</T_init>
         <T_min>2</T_min>
         <T_schedule>exponential</T_schedule>
-        <anneal_cycles>20000</anneal_cycles>
+        <anneal_cycles>10000</anneal_cycles>
         <debye_length>5</debye_length>
         <eps_r>5.599999904632568</eps_r>
         <hop_attempt_factor>5</hop_attempt_factor>
@@ -63,9 +65,9 @@ def change_header(file):
 def call_simmaneal(file, result_name):
     resultPath = " ./result/" + result_name
     command = " ./simanneal/simanneal " + file + resultPath
-    print("Calling Simanneal for file: " + file + " please wait!")
+    print("Calling Simanneal for file: " + file + " please wait!", end='\r')
+    sys.stdout.flush()
     subprocess.run(command, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-
 
 def grab_DBs(db_file):
     with open(db_file, "r") as file:
@@ -120,7 +122,7 @@ def remove_dbdots_by_latcoord(xml_tree, coordinates):
     return xml_tree
 
 def read_result(file, output_coordinates):
-    print("file: " + file)
+    #print("file: " + file)
     tree = ET.parse(file)
     root = tree.getroot()
     indexes = []
@@ -209,6 +211,105 @@ def list_files_in_directory(directory):
     sqd_files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f)) and f.endswith('.sqd')]
     return sqd_files
 
+#This part of the code will be responsable for grabbing
+#(or telling the program that it needs to generate for future runs)
+#The expected table;
+
+def grab_table(table_file):
+    if(not os.path.isfile(table_file)):
+        return ["NoTable"]
+    
+    data = []
+    with open(table_file, "r") as file:
+        for line in file:
+            parts = line.strip().split(" | ")
+            inputs = [inp.strip("'") for inp in parts[0].strip('[]').split(', ')]
+            outputs = [out.strip("'") for out in parts[1].strip('[]').split(', ')]
+            results = [res.strip("'") if res.strip("'") else '""' for res in parts[2].strip('[]').split(', ')]
+            data.append([inputs, outputs, results])
+
+    return data
+
+def compare_table(table, expected):
+    inputs_t = []
+    outputs_t = []
+    results_t = []
+
+    inputs_e = []
+    outputs_e = []
+    results_e = []
+
+    expected = [[[] if e == [''] else e for e in item] for item in expected]
+
+    for item in table:
+        inputs_t.append(item[1])
+        outputs_t.append(item[2])  
+        results_t.append(item[3])
+
+    for item in expected:
+        inputs_e.append(item[0])
+        outputs_e.append(item[1])  
+        results_e.append(item[2])
+    
+    for i, (inputs1, outputs1, results1, inputs2, outputs2, results2) in enumerate(
+        zip(inputs_t, outputs_t, results_t, inputs_e, outputs_e, results_e)
+    ):
+        if inputs1 != inputs2 or outputs1 != outputs2 or results1 != results2:
+            print(f"Row {i + 1}: Mismatch")
+            print(f"   Inputs:   {inputs1} (expected {inputs2})")
+            print(f"   Outputs:  {outputs1} (expected {outputs2})")
+            print(f"   Results:  {results1} (expected {results2})")
+        
+    return results_e
+        
+
+
+def write_table(table_file, table):
+    with open(table_file, "w") as file:
+        for item in table:
+            inputs = item[1]
+            outputs = item[2]  
+            results = item[3]
+            file.write(f"{inputs} | {outputs} | {results}\n")  # Write to the file
+
+def insert_expected_results_as_column(table, result_e):
+    new_table = []
+    
+    for i, item in enumerate(table):
+        new_row = item.copy()  # Create a copy of the original row
+        last_column = new_row.pop()  # Remove the last column
+        new_row.append(result_e[i])  # Append the expected result to the new row
+        new_row.append(last_column)  # Append the last column to the new row
+        new_table.append(new_row)  # Add the new row to the new table
+    
+    return new_table
+
+def executeFile(directory, file):
+    #get wanted files
+    selected_file = file
+    selected_txt = file.replace('.sqd', '.txt')
+    selected_exp_table = file.replace('.sqd', '_table.txt')
+    full_path = os.path.join(directory, selected_file)
+    full_txt_path = os.path.join(directory, selected_txt)
+    full_exp_table_path = os.path.join(directory, selected_exp_table)
+    print(f"Executing file: {selected_file} + {selected_txt}")
+
+
+    #Executing them
+    change_header(full_path)
+    inputs, outputs = grab_DBs(full_txt_path)
+    expected = grab_table(full_exp_table_path)
+    truth_table = combinations(inputs, outputs, 'modified_file.xml')
+    #truth_table.reverse()
+    if(expected[0] == "NoTable"):
+        write_table(full_exp_table_path, truth_table)
+        print("No table.txt found, generating one for you, please modify it and run again later!")
+        print(tabulate(truth_table, headers=["File", "Inputs", "Outputs", "State", "Energy"], tablefmt="pretty"))
+    else:    
+        expected_result = compare_table(truth_table, expected)
+        truth_table = insert_expected_results_as_column(truth_table, expected_result)
+        print(tabulate(truth_table, headers=["File", "Inputs", "Outputs", "State", "Expected", "Energy"], tablefmt="pretty"))
+
 def main():
     directory = 'gates/'  # Replace with your directory path
 
@@ -230,17 +331,7 @@ def main():
             if choice == 0:
                 return
             if 1 <= choice <= len(files):
-                selected_file = files[choice - 1]
-                selected_txt = files[choice - 1].replace('.sqd', '.txt')
-                full_path = os.path.join(directory, selected_file)
-                full_txt_path = os.path.join(directory, selected_txt)
-                print(f"Executing file: {selected_file} + {selected_txt}")
-                change_header(full_path)
-                inputs, outputs = grab_DBs(full_txt_path)
-                truth_table = combinations(inputs, outputs, 'modified_file.xml')
-                #truth_table.reverse()
-                
-                print(tabulate(truth_table, headers=["File", "Inputs", "Outputs", "State", "Energy"], tablefmt="pretty"))
+                executeFile(directory, files[choice - 1])
             else:
                 print("Invalid choice.")
         except ValueError:

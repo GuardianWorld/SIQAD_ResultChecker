@@ -1,0 +1,8 @@
+['input_and0', 'input_and1', 'input_lower0'] | ['output_0'] | ['-']
+['input_and1', 'input_lower0'] | ['output_0'] | ['0']
+['input_and0', 'input_lower0'] | ['output_0'] | ['0']
+['input_and0', 'input_and1'] | ['output_0'] | ['0']
+['input_lower0'] | ['output_0'] | ['0']
+['input_and1'] | ['output_0'] | ['0']
+['input_and0'] | ['output_0'] | ['0']
+[] | ['output_0'] | ['0']
