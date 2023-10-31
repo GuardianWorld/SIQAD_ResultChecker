@@ -10,7 +10,7 @@ from tabulate import tabulate
 
 
 def change_header(file):
-    print("Making modified Header file for Simulation", end = '\r')
+    print("Making modified Header file for Simulation", end='\r')
     sys.stdout.flush()
     tree = ET.parse(file)
     root = tree.getroot()
@@ -193,7 +193,7 @@ def combinations(dbdot_coordinates, output_coordinates, file):
 
         # Save the modified XML to a file
         modified_tree.write(f'modified/modified_file_{i}.xml', encoding='utf-8', xml_declaration=True)
-        call_simmaneal(f'modified/modified_file_{i}.xml', f'result_{i}.xml')
+        #call_simmaneal(f'modified/modified_file_{i}.xml', f'result_{i}.xml')
         result = read_result(f'./result/result_{i}.xml', output_coordinates)
 
         opposite_names = [name for _, _, _, name in opposite_combination]
@@ -217,62 +217,69 @@ def list_files_in_directory(directory):
 
 def grab_table(table_file):
     if(not os.path.isfile(table_file)):
-        return ["NoTable"]
+        return ["NoTable"], ["NoTable"]
     
     data = []
+    header = []
+    lineNumber = 0
     with open(table_file, "r") as file:
         for line in file:
+            if(lineNumber == 0):
+                lineNumber += 1
+                header = line.strip().split(" | ")
+                continue
             parts = line.strip().split(" | ")
-            inputs = [inp.strip("'") for inp in parts[0].strip('[]').split(', ')]
-            outputs = [out.strip("'") for out in parts[1].strip('[]').split(', ')]
-            results = [res.strip("'") if res.strip("'") else '""' for res in parts[2].strip('[]').split(', ')]
-            data.append([inputs, outputs, results])
+            inputs_str = parts[0].strip()
+            results_str = parts[1].strip()
+            
+            inputs = inputs_str.split()  # Split inputs
+            results = results_str.split()  # Split outputs
+            data.append([inputs, results])
 
-    return data
+    #Now to convert the Header and data into the format we want
+    input_header = header[0].split()
+    output_header = header[1].split()
 
-def compare_table(table, expected):
-    inputs_t = []
-    outputs_t = []
-    results_t = []
+    new_data = deepcopy(data)
+    for i, (inputs, results) in enumerate(new_data):
+        new_data[i][0] = [input_header[j] for j in range(len(inputs)) if inputs[j] == '1']
+        new_data[i][1] = ['-'] if results[0] == '1' else ['0']
 
-    inputs_e = []
-    outputs_e = []
-    results_e = []
+    #for inputs, results in data:
+    return data, new_data
 
-    expected = [[[] if e == [''] else e for e in item] for item in expected]
+def compare_table(table, expected, formatted):
+    print("")
+    num_rows = len(table)
+    matching_output = []
 
-    for item in table:
-        inputs_t.append(item[1])
-        outputs_t.append(item[2])  
-        results_t.append(item[3])
+    matches = 0
+    for truth_row in table:
+        # Extract the inputs and outputs from the truth_table row
+        truth_inputs = truth_row[1]
+        truth_outputs = truth_row[3]
 
-    for item in expected:
-        inputs_e.append(item[0])
-        outputs_e.append(item[1])  
-        results_e.append(item[2])
-    
-    for i, (inputs1, outputs1, results1, inputs2, outputs2, results2) in enumerate(
-        zip(inputs_t, outputs_t, results_t, inputs_e, outputs_e, results_e)
-    ):
-        if inputs1 != inputs2 or outputs1 != outputs2 or results1 != results2:
-            print(f"Row {i + 1}: Mismatch")
-            print(f"   Inputs:   {inputs1} (expected {inputs2})")
-            print(f"   Outputs:  {outputs1} (expected {outputs2})")
-            print(f"   Results:  {results1} (expected {results2})")
+        for expected_row in formatted:
+            # Extract the inputs and outputs from the expected row
+            expected_inputs = expected_row[0]
+            expected_outputs = expected_row[1]
+
+            # Check if the inputs and outputs match
+            if truth_inputs == expected_inputs:
+                matching_output.append(expected_outputs)
+                if truth_outputs == expected_outputs:
+                    matches += 1
+                    break
+        else:
+            print(f"No match found for: {truth_inputs} | {truth_outputs}")
+
+    if matches != num_rows:
+        print(f"Number of matches: {matches}/{num_rows}")
+        print("The truth table does not match the expected table.")
         
-    return results_e
-        
+    return matching_output
 
-
-def write_table(table_file, table):
-    with open(table_file, "w") as file:
-        for item in table:
-            inputs = item[1]
-            outputs = item[2]  
-            results = item[3]
-            file.write(f"{inputs} | {outputs} | {results}\n")  # Write to the file
-
-def insert_expected_results_as_column(table, result_e):
+def insert_expected_results_as_column(table, result_e, human_readable_version):
     new_table = []
     
     for i, item in enumerate(table):
@@ -283,6 +290,45 @@ def insert_expected_results_as_column(table, result_e):
         new_table.append(new_row)  # Add the new row to the new table
     
     return new_table
+
+def convert_input_to_binary(table, has_expected):
+    new_table = []
+    input_names = table[0][1]
+    for row in table:
+        input = [1 if name in row[1] else 0 for name in input_names]
+        input = ' '.join(map(str, input))
+        output = ' '.join(map(str, row[2]))
+        result = ['1' if state == '-' else '0' for state in row[3]]
+        result = ' '.join(map(str, result))
+        expected = []
+        if(has_expected):
+            expected = ['1' if state == '-' else '0' for state in row[4]]
+            expected = ' '.join(map(str, expected))
+            energy = ' '.join(map(str, row[5]))
+            new_table.append([row[0], input, output, result, expected, energy])
+        else:
+            energy = ' '.join(map(str, row[4]))
+            new_table.append([row[0], input, output, result, energy])
+    return new_table
+
+def create_table(table, file_name):
+    input_names = table[0][1]
+    ttable = ""
+    header_str = ' '.join(table[0][1]) + ' | ' + ' '.join(table[0][2])
+    ttable += header_str + '\n'
+    for row in table:
+        inputs = [1 if name in row[1] else 0 for name in input_names]
+        inputs = ' '.join(map(str, inputs))
+        result = ['1' if state == '-' else '0' for state in row[3]]
+        result = ' '.join(map(str, result))
+        ttable += inputs + ' | ' + result + '\n'
+    print ("Created table: ")
+    print (ttable)
+
+    with open(file_name, "w") as file:
+        for line in ttable:
+            file.write(line)
+
 
 def executeFile(directory, file):
     #get wanted files
@@ -298,17 +344,21 @@ def executeFile(directory, file):
     #Executing them
     change_header(full_path)
     inputs, outputs = grab_DBs(full_txt_path)
-    expected = grab_table(full_exp_table_path)
+    expected, internal_expected = grab_table(full_exp_table_path)
     truth_table = combinations(inputs, outputs, 'modified_file.xml')
     #truth_table.reverse()
     if(expected[0] == "NoTable"):
-        write_table(full_exp_table_path, truth_table)
-        print("No table.txt found, generating one for you, please modify it and run again later!")
+        print("No table.txt found, Generating a basic one for you, please modify it later!")
+        create_table(truth_table, full_exp_table_path)
+        truth_table = convert_input_to_binary(truth_table, has_expected=False)
         print(tabulate(truth_table, headers=["File", "Inputs", "Outputs", "State", "Energy"], tablefmt="pretty"))
     else:    
-        expected_result = compare_table(truth_table, expected)
-        truth_table = insert_expected_results_as_column(truth_table, expected_result)
+        expected_result = compare_table(truth_table, expected, internal_expected)
+        truth_table = insert_expected_results_as_column(truth_table, expected_result, expected)
+        truth_table = convert_input_to_binary(truth_table, has_expected=True)
         print(tabulate(truth_table, headers=["File", "Inputs", "Outputs", "State", "Expected", "Energy"], tablefmt="pretty"))
+        #for line in truth_table:
+        #    print(line)
 
 def main():
     directory = 'gates/'  # Replace with your directory path
