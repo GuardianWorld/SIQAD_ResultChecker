@@ -193,7 +193,7 @@ def combinations(dbdot_coordinates, output_coordinates, file):
 
         # Save the modified XML to a file
         modified_tree.write(f'modified/modified_file_{i}.xml', encoding='utf-8', xml_declaration=True)
-        #call_simmaneal(f'modified/modified_file_{i}.xml', f'result_{i}.xml')
+        call_simmaneal(f'modified/modified_file_{i}.xml', f'result_{i}.xml')
         result = read_result(f'./result/result_{i}.xml', output_coordinates)
 
         opposite_names = [name for _, _, _, name in opposite_combination]
@@ -206,6 +206,14 @@ def combinations(dbdot_coordinates, output_coordinates, file):
         i += 1
 
     return truth_table
+
+def remove_files_in_directory(directory):
+    for file in os.listdir(directory):
+        file_path = os.path.join(directory, file)
+        if os.path.isfile(file_path):
+            #print(file_path)
+            os.remove(file_path)
+
 
 def list_files_in_directory(directory):
     sqd_files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f)) and f.endswith('.sqd')]
@@ -249,7 +257,6 @@ def grab_table(table_file):
     return data, new_data
 
 def compare_table(table, expected, formatted):
-    print("")
     num_rows = len(table)
     matching_output = []
 
@@ -271,7 +278,7 @@ def compare_table(table, expected, formatted):
                     matches += 1
                     break
         else:
-            print(f"No match found for: {truth_inputs} | {truth_outputs}")
+            print(f"\n WARNING: No match found for: {truth_inputs} | {truth_outputs}")
 
     if matches != num_rows:
         print(f"Number of matches: {matches}/{num_rows}")
@@ -291,7 +298,7 @@ def insert_expected_results_as_column(table, result_e, human_readable_version):
     
     return new_table
 
-def convert_input_to_binary(table, has_expected):
+def convert_table_to_human_readable(table, has_expected):
     new_table = []
     input_names = table[0][1]
     for row in table:
@@ -346,25 +353,24 @@ def executeFile(directory, file):
     inputs, outputs = grab_DBs(full_txt_path)
     expected, internal_expected = grab_table(full_exp_table_path)
     truth_table = combinations(inputs, outputs, 'modified_file.xml')
-    #truth_table.reverse()
     if(expected[0] == "NoTable"):
         print("No table.txt found, Generating a basic one for you, please modify it later!")
         create_table(truth_table, full_exp_table_path)
-        truth_table = convert_input_to_binary(truth_table, has_expected=False)
+        truth_table = convert_table_to_human_readable(truth_table, has_expected=False)
         print(tabulate(truth_table, headers=["File", "Inputs", "Outputs", "State", "Energy"], tablefmt="pretty"))
     else:    
         expected_result = compare_table(truth_table, expected, internal_expected)
         truth_table = insert_expected_results_as_column(truth_table, expected_result, expected)
-        truth_table = convert_input_to_binary(truth_table, has_expected=True)
+        truth_table = convert_table_to_human_readable(truth_table, has_expected=True)
         print(tabulate(truth_table, headers=["File", "Inputs", "Outputs", "State", "Expected", "Energy"], tablefmt="pretty"))
-        #for line in truth_table:
-        #    print(line)
 
 def main():
     directory = 'gates/'  # Replace with your directory path
 
     while(True):
-        print("GATE CHECKER by Emanuel\n")
+        print("GATE CHECKER by Emanuel\n\n")
+        print("Enter 0 to Exit")
+        print("Enter -1 to clean the folders")
         files = list_files_in_directory(directory)
         if not files:
             print("No files found in the directory.")
@@ -373,11 +379,15 @@ def main():
         for i, file in enumerate(files, 1):
             print(f"{i}. {file}")
 
-        print("\nEnter 0 to Exit")
         choice = input("Enter the number of the file you want to execute: ")
 
         try:
             choice = int(choice)
+            if choice == -1:
+                remove_files_in_directory('modified')
+                remove_files_in_directory('result')
+                print("Cleaned the folders!")
+                continue
             if choice == 0:
                 return
             if 1 <= choice <= len(files):
