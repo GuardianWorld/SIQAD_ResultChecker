@@ -1,0 +1,9 @@
+input_upper0 input_upper1 input_lower0 | output_0
+1 1 1 | 1
+1 1 0 | 1
+1 0 1 | 1
+1 0 0 | 0
+0 1 1 | 1
+0 1 0 | 0
+0 0 1 | 1
+0 0 0 | 1

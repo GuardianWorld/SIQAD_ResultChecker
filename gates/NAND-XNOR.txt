@@ -1,0 +1,6 @@
+3
+1
+-68 50 0 input_nand0
+-50 50 0 input_nand1
+-91 75 0 input_lower0
+-76 86 0 output_0

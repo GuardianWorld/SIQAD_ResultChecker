@@ -70,29 +70,33 @@ def call_simmaneal(file, result_name):
     subprocess.run(command, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 def grab_DBs(db_file):
-    with open(db_file, "r") as file:
-        coordinates = []
-        inputs = []
-        outputs = []
+    try:
+        with open(db_file, "r") as file:
+            coordinates = []
+            inputs = []
+            outputs = []
 
-        for line_number, line in enumerate(file, start=1):
-            line = line.strip()
+            for line_number, line in enumerate(file, start=1):
+                line = line.strip()
 
-            if not line:
-                continue
+                if not line:
+                    continue
 
-            if line_number == 1:
-                input_number = int(line)
-            elif line_number == 2:
-                output_number = int(line)
-            elif input_number > 0:
-                input_number -= 1
-                inputs.append(grab_coordinate(line))
-            elif output_number > 0:
-                output_number -= 1
-                outputs.append(grab_coordinate(line))
+                if line_number == 1:
+                    input_number = int(line)
+                elif line_number == 2:
+                    output_number = int(line)
+                elif input_number > 0:
+                    input_number -= 1
+                    inputs.append(grab_coordinate(line))
+                elif output_number > 0:
+                    output_number -= 1
+                    outputs.append(grab_coordinate(line))
 
-    return inputs, outputs
+        return inputs, outputs
+    except:
+        print("Error, missing or invalid file:", db_file)
+        return "None", "None"
 
 def grab_coordinate(line):
     n, m, l, name = line.split()
@@ -197,7 +201,6 @@ def combinations(dbdot_coordinates, output_coordinates, file):
         result = read_result(f'./result/result_{i}.xml', output_coordinates)
 
         opposite_names = [name for _, _, _, name in opposite_combination]
-        #result_names, result_values, result_energy = zip(*[(name_output, value, energy) for name_output, value, energy in result])
         result_names = [name_output for name_output, _, _ in result]
         result_values = [value for _, value, _ in result]
         result_energy = [energy for _, _, energy in result]
@@ -227,38 +230,43 @@ def grab_table(table_file):
     if(not os.path.isfile(table_file)):
         return ["NoTable"], ["NoTable"]
     
-    data = []
-    header = []
-    lineNumber = 0
-    with open(table_file, "r") as file:
-        for line in file:
-            if(lineNumber == 0):
-                lineNumber += 1
-                header = line.strip().split(" | ")
-                continue
-            parts = line.strip().split(" | ")
-            inputs_str = parts[0].strip()
-            results_str = parts[1].strip()
-            
-            inputs = inputs_str.split()  # Split inputs
-            results = results_str.split()  # Split outputs
-            data.append([inputs, results])
+    try:
+        data = []
+        header = []
+        lineNumber = 0
+        with open(table_file, "r") as file:
+            for line in file:
+                if(lineNumber == 0):
+                    lineNumber += 1
+                    header = line.strip().split(" | ")
+                    continue
+                parts = line.strip().split(" | ")
+                inputs_str = parts[0].strip()
+                results_str = parts[1].strip()
+                
+                inputs = inputs_str.split()  # Split inputs
+                results = results_str.split()  # Split outputs
+                data.append([inputs, results])
 
-    #Now to convert the Header and data into the format we want
-    input_header = header[0].split()
-    output_header = header[1].split()
+        #Now to convert the Header and data into the format we want
+        input_header = header[0].split()
+        output_header = header[1].split()
 
-    new_data = deepcopy(data)
-    for i, (inputs, results) in enumerate(new_data):
-        new_data[i][0] = [input_header[j] for j in range(len(inputs)) if inputs[j] == '1']
-        new_data[i][1] = ['-'] if results[0] == '1' else ['0']
+        new_data = deepcopy(data)
+        for i, (inputs, results) in enumerate(new_data):
+            new_data[i][0] = [input_header[j] for j in range(len(inputs)) if inputs[j] == '1']
+            new_data[i][1] = ['-'] if results[0] == '1' else ['0']
 
-    #for inputs, results in data:
-    return data, new_data
+        #for inputs, results in data:
+        return data, new_data
+    except:
+        print("\nInvalid Table file!")
+        return ["NoTable"], ["NoTable"]
 
 def compare_table(table, expected, formatted):
     num_rows = len(table)
     matching_output = []
+    does_it_match = False
 
     matches = 0
     for truth_row in table:
@@ -283,8 +291,10 @@ def compare_table(table, expected, formatted):
     if matches != num_rows:
         print(f"Number of matches: {matches}/{num_rows}")
         print("The truth table does not match the expected table.")
-        
-    return matching_output
+    else:
+        print("\nThe truth table matches the expected table.")
+        does_it_match = True
+    return matching_output, does_it_match
 
 def insert_expected_results_as_column(table, result_e, human_readable_version):
     new_table = []
@@ -304,7 +314,7 @@ def convert_table_to_human_readable(table, has_expected):
     for row in table:
         input = [1 if name in row[1] else 0 for name in input_names]
         input = ' '.join(map(str, input))
-        output = ' '.join(map(str, row[2]))
+        #output = ' '.join(map(str, row[2]))
         result = ['1' if state == '-' else '0' for state in row[3]]
         result = ' '.join(map(str, result))
         expected = []
@@ -312,11 +322,26 @@ def convert_table_to_human_readable(table, has_expected):
             expected = ['1' if state == '-' else '0' for state in row[4]]
             expected = ' '.join(map(str, expected))
             energy = ' '.join(map(str, row[5]))
-            new_table.append([row[0], input, output, result, expected, energy])
+            new_table.append([row[0], input, result, expected, energy])
         else:
             energy = ' '.join(map(str, row[4]))
-            new_table.append([row[0], input, output, result, energy])
+            new_table.append([row[0], input, result, energy])
     return new_table
+
+def add_tab_to_table(table, has_expected):
+    table_str = ""
+    if has_expected:
+        table_str = tabulate(table, headers=["File", "Inputs", "Outputs", "Expected", "Energy"], tablefmt="pretty")
+    else:
+        table_str = tabulate(table, headers=["File", "Inputs", "Outputs", "Energy"], tablefmt="pretty")
+    # Add a tab character before each line
+    tabulated_lines = table_str.split('\n')
+    tabulated_lines = ['\t' + line for line in tabulated_lines]
+
+# Join the lines back together with newline characters
+    table_str = '\n'.join(tabulated_lines)
+    return table_str
+
 
 def create_table(table, file_name):
     input_names = table[0][1]
@@ -351,24 +376,30 @@ def executeFile(directory, file):
     #Executing them
     change_header(full_path)
     inputs, outputs = grab_DBs(full_txt_path)
+    if(inputs == "None"):
+        return
     expected, internal_expected = grab_table(full_exp_table_path)
     truth_table = combinations(inputs, outputs, 'modified_file.xml')
     if(expected[0] == "NoTable"):
         print("No table.txt found, Generating a basic one for you, please modify it later!")
         create_table(truth_table, full_exp_table_path)
         truth_table = convert_table_to_human_readable(truth_table, has_expected=False)
-        print(tabulate(truth_table, headers=["File", "Inputs", "Outputs", "State", "Energy"], tablefmt="pretty"))
-    else:    
-        expected_result = compare_table(truth_table, expected, internal_expected)
+        print(tabulate(truth_table, headers=["File", "Inputs", "Outputs", "Energy"], tablefmt="pretty"), "\n\n")
+        return
+    expected_result, does_it_match = compare_table(truth_table, expected, internal_expected)
+    if(not does_it_match):
         truth_table = insert_expected_results_as_column(truth_table, expected_result, expected)
         truth_table = convert_table_to_human_readable(truth_table, has_expected=True)
-        print(tabulate(truth_table, headers=["File", "Inputs", "Outputs", "State", "Expected", "Energy"], tablefmt="pretty"))
+        print(tabulate(truth_table, headers=["File", "Inputs", "Outputs", "Expected", "Energy"], tablefmt="pretty"), "\n\n")
+    else:
+        truth_table = convert_table_to_human_readable(truth_table, has_expected=False)
+        print(tabulate(truth_table, headers=["File", "Inputs", "Outputs", "Energy"], tablefmt="pretty"), "\n\n")
 
 def main():
     directory = 'gates/'  # Replace with your directory path
-
+    
     while(True):
-        print("GATE CHECKER by Emanuel\n\n")
+        print("\tGATE CHECKER by Emanuel\n")
         print("Enter 0 to Exit")
         print("Enter -1 to clean the folders")
         files = list_files_in_directory(directory)

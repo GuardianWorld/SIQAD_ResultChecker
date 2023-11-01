@@ -1,0 +1,9 @@
+input_nand0 input_nand1 input_lower0 | output_0
+1 1 1 | 1
+1 1 0 | 1
+1 0 1 | 0
+1 0 0 | 1
+0 1 1 | 0
+0 1 0 | 1
+0 0 1 | 0
+0 0 0 | 1
