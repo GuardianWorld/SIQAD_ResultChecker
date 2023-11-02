@@ -338,7 +338,7 @@ def add_tab_to_table(table, has_expected):
     tabulated_lines = table_str.split('\n')
     tabulated_lines = ['\t' + line for line in tabulated_lines]
 
-# Join the lines back together with newline characters
+    # Join the lines back together with newline characters
     table_str = '\n'.join(tabulated_lines)
     return table_str
 
@@ -364,12 +364,15 @@ def create_table(table, file_name):
 
 def executeFile(directory, file):
     #get wanted files
-    selected_file = file
+    selected_file = file    
     selected_txt = file.replace('.sqd', '.txt')
     selected_exp_table = file.replace('.sqd', '_table.txt')
+
+    individual_directory = directory + selected_file.replace('.sqd', '')
+    print ("Individual directory: " + individual_directory)
     full_path = os.path.join(directory, selected_file)
-    full_txt_path = os.path.join(directory, selected_txt)
-    full_exp_table_path = os.path.join(directory, selected_exp_table)
+    full_txt_path = os.path.join(individual_directory, selected_txt)
+    full_exp_table_path = os.path.join(individual_directory, selected_exp_table)
     print(f"Executing file: {selected_file} + {selected_txt}")
 
 
@@ -386,6 +389,7 @@ def executeFile(directory, file):
         truth_table = convert_table_to_human_readable(truth_table, has_expected=False)
         print(tabulate(truth_table, headers=["File", "Inputs", "Outputs", "Energy"], tablefmt="pretty"), "\n\n")
         return
+    
     expected_result, does_it_match = compare_table(truth_table, expected, internal_expected)
     if(not does_it_match):
         truth_table = insert_expected_results_as_column(truth_table, expected_result, expected)
