@@ -1,6 +1,7 @@
 3
-1
+2
 -66 49 1 input_and0
 -48 49 1 input_and1
 -90 74 1 input_lower0
 -75 87 0 output_0
+-49 65 1 output_top1

@@ -8,6 +8,7 @@ import subprocess
 from datetime import datetime
 from tabulate import tabulate
 
+#TODO: Fazer Expected Table para multiplas OUTPUTS;
 
 def change_header(file):
     print("Making modified Header file for Simulation", end='\r')
@@ -204,6 +205,7 @@ def combinations(dbdot_coordinates, output_coordinates, file):
         result_names = [name_output for name_output, _, _ in result]
         result_values = [value for _, value, _ in result]
         result_energy = [energy for _, _, energy in result]
+        result_energy = [result_energy[0]]
         result_name = f'result_{i}.xml'
         truth_table.append([result_name,opposite_names, result_names, result_values, result_energy])
         i += 1
@@ -216,7 +218,6 @@ def remove_files_in_directory(directory):
         if os.path.isfile(file_path):
             #print(file_path)
             os.remove(file_path)
-
 
 def list_files_in_directory(directory):
     sqd_files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f)) and f.endswith('.sqd')]
@@ -243,9 +244,11 @@ def grab_table(table_file):
                 parts = line.strip().split(" | ")
                 inputs_str = parts[0].strip()
                 results_str = parts[1].strip()
+                #print(results_str)
                 
                 inputs = inputs_str.split()  # Split inputs
                 results = results_str.split()  # Split outputs
+                #print(">>", results)
                 data.append([inputs, results])
 
         #Now to convert the Header and data into the format we want
@@ -254,10 +257,17 @@ def grab_table(table_file):
 
         new_data = deepcopy(data)
         for i, (inputs, results) in enumerate(new_data):
+            #print(results)
             new_data[i][0] = [input_header[j] for j in range(len(inputs)) if inputs[j] == '1']
-            new_data[i][1] = ['-'] if results[0] == '1' else ['0']
+            new_results = []
+            for result in results:
+                if result == '1':
+                    new_results.append('-')
+                else:
+                    new_results.append('0')
+            
+            new_data[i][1] = new_results
 
-        #for inputs, results in data:
         return data, new_data
     except:
         print("\nInvalid Table file!")
@@ -281,6 +291,8 @@ def compare_table(table, expected, formatted):
 
             # Check if the inputs and outputs match
             if truth_inputs == expected_inputs:
+                #print(f"\nMatch found for: {truth_inputs} | {expected_inputs}")
+                #print(">>", expected_outputs, truth_outputs)
                 matching_output.append(expected_outputs)
                 if truth_outputs == expected_outputs:
                     matches += 1
@@ -361,6 +373,9 @@ def create_table(table, file_name):
         for line in ttable:
             file.write(line)
 
+
+def table_presentation():
+    print("AAA")
 
 def executeFile(directory, file):
     #get wanted files
