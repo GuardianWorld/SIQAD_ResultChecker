@@ -7,12 +7,10 @@ import math
 import subprocess
 from datetime import datetime
 from tabulate import tabulate
-
-#TODO: Fazer Expected Table para multiplas OUTPUTS;
-
-def change_header(file):
-    print("Making modified Header file for Simulation", end='\r')
-    sys.stdout.flush()
+def change_header(file, shall_print):
+    if(shall_print):
+        print("Making modified Header file for Simulation", end='\r')
+        sys.stdout.flush()
     tree = ET.parse(file)
     root = tree.getroot()
     
@@ -63,11 +61,12 @@ def change_header(file):
     # Save the modified XML to a file
     tree.write('modified_file.xml', encoding='utf-8', xml_declaration=True)
 
-def call_simmaneal(file, result_name):
+def call_simmaneal(file, result_name, shall_print):
     resultPath = " ./result/" + result_name
     command = " ./simanneal/simanneal " + file + resultPath
-    print("Calling Simanneal for file: " + file + " please wait!", end='\r')
-    sys.stdout.flush()
+    if(shall_print):
+        print("Calling Simanneal for file: " + file + " please wait!", end='\r')
+        sys.stdout.flush()
     subprocess.run(command, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 def grab_DBs(db_file):
@@ -172,7 +171,7 @@ def read_result(file, output_coordinates):
 
     return symbol_list
 
-def combinations(dbdot_coordinates, output_coordinates, file):
+def combinations(dbdot_coordinates, output_coordinates, file, shall_print):
     tree = ET.parse(file)
     number_of_dots = len(dbdot_coordinates)
     combinations_to_remove = []
@@ -198,7 +197,7 @@ def combinations(dbdot_coordinates, output_coordinates, file):
 
         # Save the modified XML to a file
         modified_tree.write(f'modified/modified_file_{i}.xml', encoding='utf-8', xml_declaration=True)
-        call_simmaneal(f'modified/modified_file_{i}.xml', f'result_{i}.xml')
+        call_simmaneal(f'modified/modified_file_{i}.xml', f'result_{i}.xml', shall_print)
         result = read_result(f'./result/result_{i}.xml', output_coordinates)
 
         opposite_names = [name for _, _, _, name in opposite_combination]
@@ -273,7 +272,7 @@ def grab_table(table_file):
         print("\nInvalid Table file!")
         return ["NoTable"], ["NoTable"]
 
-def compare_table(table, expected, formatted):
+def compare_table(table, expected, formatted, shall_print):
     num_rows = len(table)
     matching_output = []
     does_it_match = False
@@ -298,13 +297,16 @@ def compare_table(table, expected, formatted):
                     matches += 1
                     break
         else:
-            print(f"\n WARNING: No match found for: {truth_inputs} | {truth_outputs}")
+            if(shall_print):
+                print(f"\n WARNING: No match found for: {truth_inputs} | {truth_outputs}")
 
     if matches != num_rows:
-        print(f"Number of matches: {matches}/{num_rows}")
-        print("The truth table does not match the expected table.")
+        if(shall_print):
+            print(f"Number of matches: {matches}/{num_rows}")
+            print("The truth table does not match the expected table.")
     else:
-        print("\nThe truth table matches the expected table.")
+        if(shall_print):
+            print("\nThe truth table matches the expected table.")
         does_it_match = True
     return matching_output, does_it_match
 
@@ -374,8 +376,15 @@ def create_table(table, file_name):
             file.write(line)
 
 
-def table_presentation():
-    print("AAA")
+def table_presentation(truth_table, full_print):
+    if(not full_print):
+        truth_table = convert_table_to_human_readable(truth_table, has_expected=False)
+        print(tabulate(truth_table, headers=["File", "Inputs", "Outputs", "Energy"], tablefmt="pretty"), "\n\n")
+    else:
+        truth_table = convert_table_to_human_readable(truth_table, has_expected=True)
+        print(tabulate(truth_table, headers=["File", "Inputs", "Outputs", "Expected", "Energy"], tablefmt="pretty"), "\n\n")
+    return
+
 
 def executeFile(directory, file):
     #get wanted files
@@ -384,7 +393,7 @@ def executeFile(directory, file):
     selected_exp_table = file.replace('.sqd', '_table.txt')
 
     individual_directory = directory + selected_file.replace('.sqd', '')
-    print ("Individual directory: " + individual_directory)
+    #print ("Individual directory: " + individual_directory)
     full_path = os.path.join(directory, selected_file)
     full_txt_path = os.path.join(individual_directory, selected_txt)
     full_exp_table_path = os.path.join(individual_directory, selected_exp_table)
@@ -392,31 +401,64 @@ def executeFile(directory, file):
 
 
     #Executing them
-    change_header(full_path)
+    change_header(full_path, True)
     inputs, outputs = grab_DBs(full_txt_path)
     if(inputs == "None"):
         return
     expected, internal_expected = grab_table(full_exp_table_path)
-    truth_table = combinations(inputs, outputs, 'modified_file.xml')
+    truth_table = combinations(inputs, outputs, 'modified_file.xml', True)
     if(expected[0] == "NoTable"):
         print("No table.txt found, Generating a basic one for you, please modify it later!")
         create_table(truth_table, full_exp_table_path)
-        truth_table = convert_table_to_human_readable(truth_table, has_expected=False)
-        print(tabulate(truth_table, headers=["File", "Inputs", "Outputs", "Energy"], tablefmt="pretty"), "\n\n")
-        return
-    
-    expected_result, does_it_match = compare_table(truth_table, expected, internal_expected)
-    if(not does_it_match):
-        truth_table = insert_expected_results_as_column(truth_table, expected_result, expected)
-        truth_table = convert_table_to_human_readable(truth_table, has_expected=True)
-        print(tabulate(truth_table, headers=["File", "Inputs", "Outputs", "Expected", "Energy"], tablefmt="pretty"), "\n\n")
     else:
-        truth_table = convert_table_to_human_readable(truth_table, has_expected=False)
-        print(tabulate(truth_table, headers=["File", "Inputs", "Outputs", "Energy"], tablefmt="pretty"), "\n\n")
+        expected_result, does_it_match = compare_table(truth_table, expected, internal_expected, True)
+        if(not does_it_match):
+            truth_table = insert_expected_results_as_column(truth_table, expected_result, expected)
+            table_presentation(truth_table, True)
+            return
+    
+    table_presentation(truth_table, False)
+    return
+
+def execute_extern(sqd, txt, expected_txt):
+    selected_file = sqd
+    selected_txt = txt
+    selected_exp_table = expected_txt
+    change_header(selected_file, False)
+    inputs, outputs = grab_DBs(selected_txt)
+    expected, internal_expected = grab_table(selected_exp_table)
+    truth_table = combinations(inputs, outputs, 'modified_file.xml', False)
+    if(expected[0] == "NoTable"):
+       return "NoTable", False
+    else:
+        expected_result, does_it_match = compare_table(truth_table, expected, internal_expected, False)
+        if(not does_it_match):
+            truth_table = insert_expected_results_as_column(truth_table, expected_result, expected)
+            return truth_table, does_it_match
+    return truth_table, does_it_match
+
+def sys_args():
+    sqd = sys.argv[1]
+    txt = sys.argv[2]
+    table = sys.argv[3]
+
+    truth_table, does_it_match = execute_extern(sqd, txt, table)
+    if(truth_table == "NoTable"):
+        print("-1")
+        return
+    if(does_it_match):
+        print("1")
+        table_presentation(truth_table, False)
+    else:
+        print("0")
+        table_presentation(truth_table, True)
 
 def main():
+    if len(sys.argv) == 4:
+        sys_args()
+        return
+
     directory = 'gates/'  # Replace with your directory path
-    
     while(True):
         print("\tGATE CHECKER by Emanuel\n")
         print("Enter 0 to Exit")
