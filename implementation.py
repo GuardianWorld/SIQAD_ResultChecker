@@ -10,7 +10,8 @@ def call_analysis():
     sqd_file = "AND-AND.sqd"
     coordinates_file = "AND-AND.txt"
     truth_table_file = "AND-AND_table.txt"
-    command = ["python3", "main.py", sqd_file, coordinates_file, truth_table_file]
+    #command = ["python3", "main.py", sqd_file, coordinates_file, truth_table_file] Will use -1 as the default value for num_instances
+    command = ["python3", "main.py", sqd_file, coordinates_file, truth_table_file, "256"]
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
     stdout, stderr = process.communicate()
 

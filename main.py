@@ -7,7 +7,7 @@ import math
 import subprocess
 from datetime import datetime
 from tabulate import tabulate
-def change_header(file, shall_print):
+def change_header(file, shall_print, num_instances):
     if(shall_print):
         print("Making modified Header file for Simulation", end='\r')
         sys.stdout.flush()
@@ -22,7 +22,6 @@ def change_header(file, shall_print):
     current_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     date_element.text = current_date
 
-
     new_sim_params_str = """
     <sim_params>
         <T_e_inv_point>0.09995000064373016</T_e_inv_point>
@@ -34,7 +33,7 @@ def change_header(file, shall_print):
         <eps_r>5.599999904632568</eps_r>
         <hop_attempt_factor>5</hop_attempt_factor>
         <muzm>-0.3199999928474426</muzm>
-        <num_instances>512</num_instances>
+        <num_instances>-1</num_instances>
         <phys_validity_check_cycles>10</phys_validity_check_cycles>
         <reset_T_during_v_freeze_reset>false</reset_T_during_v_freeze_reset>
         <result_queue_size>0.10000000149011612</result_queue_size>
@@ -46,10 +45,16 @@ def change_header(file, shall_print):
     </sim_params>
     """
 
+
+
     # Parse the new sim_params XML string and insert it into the root
     new_sim_params = ET.fromstring(new_sim_params_str)
+    # Modify the num_instances if provided
+    num_instances_element = new_sim_params.find('num_instances')
+    num_instances_element.text = f'{num_instances}'
+
     root.insert(1, new_sim_params)
-        
+    
     sim_params = root.find(".//sim_params")
     if(sim_params is not None):
         root.remove(sim_params)
@@ -401,7 +406,7 @@ def table_presentation(truth_table, full_print):
     return
 
 
-def executeFile(directory, file):
+def executeFile(directory, file, num_instances=-1):
     #get wanted files
     selected_file = file    
     selected_txt = file.replace('.sqd', '.txt')
@@ -416,7 +421,7 @@ def executeFile(directory, file):
 
 
     #Executing them
-    change_header(full_path, True)
+    change_header(full_path, True, num_instances)
     inputs, outputs = grab_DBs(full_txt_path)
     if(inputs == "None"):
         return
@@ -435,11 +440,11 @@ def executeFile(directory, file):
     table_presentation(truth_table, False)
     return
 
-def execute_extern(sqd, txt, expected_txt):
+def execute_extern(sqd, txt, expected_txt, num_instance):
     selected_file = sqd
     selected_txt = txt
     selected_exp_table = expected_txt
-    change_header(selected_file, False)
+    change_header(selected_file, False, num_instance)
     inputs, outputs = grab_DBs(selected_txt)
     expected, internal_expected = grab_table(selected_exp_table)
     truth_table = combinations(inputs, outputs, 'modified_file.xml', False)
@@ -452,12 +457,12 @@ def execute_extern(sqd, txt, expected_txt):
             return truth_table, does_it_match, to_be_printed
     return truth_table, does_it_match, ["_"]
 
-def sys_args():
+def sys_args_default():
     sqd = sys.argv[1]
     txt = sys.argv[2]
     table = sys.argv[3]
 
-    truth_table, does_it_match, to_be_printed = execute_extern(sqd, txt, table)
+    truth_table, does_it_match, to_be_printed = execute_extern(sqd, txt, table, -1)
     if(truth_table == "NoTable"):
         print("-1")
         return
@@ -470,16 +475,56 @@ def sys_args():
         for line in to_be_printed:
             print(line)
 
+def sys_args_five():
+    sqd = sys.argv[1]
+    txt = sys.argv[2]
+    table = sys.argv[3]
+    num_instance = sys.argv[4]
+
+    truth_table, does_it_match, to_be_printed = execute_extern(sqd, txt, table, num_instance)
+    if(truth_table == "NoTable"):
+        print("-1")
+        return
+    if(does_it_match):
+        print("1")
+        table_presentation(truth_table, False)
+    else:
+        print("0")
+        table_presentation(truth_table, True)
+        for line in to_be_printed:
+            print(line)
+
+
 def main():
+
+    num_instances = -1
+    if len(sys.argv) == 2:
+        value = sys.argv[1]
+        if(value == "-clean"):
+            remove_files_in_directory('modified')
+            remove_files_in_directory('result')
+            print("Cleaned the folders!")
+            return
+        int_value = int(value)
+        if(int_value >= 32):
+            num_instances = int_value
+        else:
+            print("Invalid number of instances, must be bigger or equal 32!")
+            return
     if len(sys.argv) == 4:
-        sys_args()
+        sys_args_default()
+        return 
+    if len(sys.argv) == 5:
+        sys_args_five()
         return
 
     directory = 'gates/'  # Replace with your directory path
     while(True):
         print("\tGATE CHECKER by Emanuel\n")
+        print("Number of SimAnneal DB Instances:", num_instances)
         print("Enter 0 to Exit")
         print("Enter -1 to clean the folders")
+        print("Enter -2 to change the number of instances")
         files = list_files_in_directory(directory)
         if not files:
             print("No files found in the directory.")
@@ -492,6 +537,18 @@ def main():
 
         try:
             choice = int(choice)
+            if choice == -2:
+                print("Type the number of instances (-1 or value bigger than 32): ")
+                try:
+                    num_instances_new = int(input())
+                    if num_instances_new < 32:
+                        print("Setting value to -1")
+                        num_instances = -1
+                        continue
+                    num_instances = num_instances_new
+                except ValueError:
+                    print("Invalid input. Please enter a valid number.")
+                    continue
             if choice == -1:
                 remove_files_in_directory('modified')
                 remove_files_in_directory('result')
@@ -500,7 +557,7 @@ def main():
             if choice == 0:
                 return
             if 1 <= choice <= len(files):
-                executeFile(directory, files[choice - 1])
+                executeFile(directory, files[choice - 1], num_instances)
             else:
                 print("Invalid choice.")
         except ValueError:
