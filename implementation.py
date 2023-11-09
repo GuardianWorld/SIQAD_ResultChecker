@@ -26,5 +26,11 @@ def call_analysis():
         print("ERROR!")
         print(stderr)
         
+## After this, it could be possible to grab the analysis and check what is going on with the outputs, example:
+## - If in ONE case of the inputs, the output of the FIRST gate is 0 when it should be 1, you could try to: 
+## -> Move it closer to the booster
+## -> Add a DB to the output of the gate (8-10 distance)
+## -> If the first DB after the booster (Lets call it Output-MID) is being checked and it also gives a wrong result
+## -> Move the gate closer to the booster, or further away from the booster, etc.
 
 call_analysis()

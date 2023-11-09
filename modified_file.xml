@@ -4,7 +4,7 @@
     <program>
         <file_purpose>simulation</file_purpose>
         <version>0.3.3</version>
-        <date>2023-11-06 11:02:38</date>
+        <date>2023-11-09 13:50:52</date>
     </program>
     
     <sim_params>
@@ -12,12 +12,12 @@
         <T_init>500</T_init>
         <T_min>2</T_min>
         <T_schedule>exponential</T_schedule>
-        <anneal_cycles>10000</anneal_cycles>
+        <anneal_cycles>20000</anneal_cycles>
         <debye_length>5</debye_length>
         <eps_r>5.599999904632568</eps_r>
         <hop_attempt_factor>5</hop_attempt_factor>
         <muzm>-0.3199999928474426</muzm>
-        <num_instances>-1</num_instances>
+        <num_instances>512</num_instances>
         <phys_validity_check_cycles>10</phys_validity_check_cycles>
         <reset_T_during_v_freeze_reset>false</reset_T_during_v_freeze_reset>
         <result_queue_size>0.10000000149011612</result_queue_size>

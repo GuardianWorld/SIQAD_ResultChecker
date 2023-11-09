@@ -34,7 +34,7 @@ def change_header(file, shall_print):
         <eps_r>5.599999904632568</eps_r>
         <hop_attempt_factor>5</hop_attempt_factor>
         <muzm>-0.3199999928474426</muzm>
-        <num_instances>-1</num_instances>
+        <num_instances>512</num_instances>
         <phys_validity_check_cycles>10</phys_validity_check_cycles>
         <reset_T_during_v_freeze_reset>false</reset_T_during_v_freeze_reset>
         <result_queue_size>0.10000000149011612</result_queue_size>
@@ -276,6 +276,10 @@ def compare_table(table, expected, formatted, shall_print):
     num_rows = len(table)
     matching_output = []
     does_it_match = False
+    
+    to_be_printed = []
+    index_of_success = []
+    all_indexes = 0
 
     matches = 0
     for truth_row in table:
@@ -283,32 +287,43 @@ def compare_table(table, expected, formatted, shall_print):
         truth_inputs = truth_row[1]
         truth_outputs = truth_row[3]
 
-        for expected_row in formatted:
+        for i, expected_row in enumerate(formatted):
             # Extract the inputs and outputs from the expected row
             expected_inputs = expected_row[0]
             expected_outputs = expected_row[1]
-
             # Check if the inputs and outputs match
             if truth_inputs == expected_inputs:
-                #print(f"\nMatch found for: {truth_inputs} | {expected_inputs}")
-                #print(">>", expected_outputs, truth_outputs)
                 matching_output.append(expected_outputs)
                 if truth_outputs == expected_outputs:
+                    index_of_success.append(i)
                     matches += 1
                     break
-        else:
-            if(shall_print):
-                print(f"\n WARNING: No match found for: {truth_inputs} | {truth_outputs}")
+        all_indexes += 1
 
     if matches != num_rows:
         if(shall_print):
             print(f"Number of matches: {matches}/{num_rows}")
             print("The truth table does not match the expected table.")
+            print("The following rows do not match the expected table:")
+            for i, row in enumerate(expected):
+                if i not in index_of_success:
+                    print(row, "obtained output:", table[i][3])
+        else:
+            for i, row in enumerate(expected):
+                if i not in index_of_success:
+                    str_row = ' | '.join([' '.join(sublist) for sublist in row])
+                    table_wanted = table[i][3]
+                    for element in table_wanted:
+                        if(element == '-'):
+                            table_wanted[table_wanted.index(element)] = '1'
+                    table_wanted = ' '.join(table_wanted)
+                    to_be_printed.append(' '.join([str_row, '|', table_wanted]))
+
     else:
         if(shall_print):
             print("\nThe truth table matches the expected table.")
         does_it_match = True
-    return matching_output, does_it_match
+    return matching_output, does_it_match, to_be_printed
 
 def insert_expected_results_as_column(table, result_e, human_readable_version):
     new_table = []
@@ -411,7 +426,7 @@ def executeFile(directory, file):
         print("No table.txt found, Generating a basic one for you, please modify it later!")
         create_table(truth_table, full_exp_table_path)
     else:
-        expected_result, does_it_match = compare_table(truth_table, expected, internal_expected, True)
+        expected_result, does_it_match, _ = compare_table(truth_table, expected, internal_expected, True)
         if(not does_it_match):
             truth_table = insert_expected_results_as_column(truth_table, expected_result, expected)
             table_presentation(truth_table, True)
@@ -429,20 +444,20 @@ def execute_extern(sqd, txt, expected_txt):
     expected, internal_expected = grab_table(selected_exp_table)
     truth_table = combinations(inputs, outputs, 'modified_file.xml', False)
     if(expected[0] == "NoTable"):
-       return "NoTable", False
+       return "NoTable", False, []
     else:
-        expected_result, does_it_match = compare_table(truth_table, expected, internal_expected, False)
+        expected_result, does_it_match, to_be_printed = compare_table(truth_table, expected, internal_expected, False)
         if(not does_it_match):
             truth_table = insert_expected_results_as_column(truth_table, expected_result, expected)
-            return truth_table, does_it_match
-    return truth_table, does_it_match
+            return truth_table, does_it_match, to_be_printed
+    return truth_table, does_it_match, ["_"]
 
 def sys_args():
     sqd = sys.argv[1]
     txt = sys.argv[2]
     table = sys.argv[3]
 
-    truth_table, does_it_match = execute_extern(sqd, txt, table)
+    truth_table, does_it_match, to_be_printed = execute_extern(sqd, txt, table)
     if(truth_table == "NoTable"):
         print("-1")
         return
@@ -452,6 +467,8 @@ def sys_args():
     else:
         print("0")
         table_presentation(truth_table, True)
+        for line in to_be_printed:
+            print(line)
 
 def main():
     if len(sys.argv) == 4:
