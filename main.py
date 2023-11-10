@@ -471,9 +471,9 @@ def sys_args_default():
         table_presentation(truth_table, False)
     else:
         print("0")
-        table_presentation(truth_table, True)
         for line in to_be_printed:
             print(line)
+        table_presentation(truth_table, True)
 
 def sys_args_five():
     sqd = sys.argv[1]
@@ -490,9 +490,9 @@ def sys_args_five():
         table_presentation(truth_table, False)
     else:
         print("0")
-        table_presentation(truth_table, True)
         for line in to_be_printed:
             print(line)
+        table_presentation(truth_table, True)
 
 
 def main():

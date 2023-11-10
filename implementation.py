@@ -11,7 +11,7 @@ def call_analysis():
     coordinates_file = "AND-AND.txt"
     truth_table_file = "AND-AND_table.txt"
     #command = ["python3", "main.py", sqd_file, coordinates_file, truth_table_file] Will use -1 as the default value for num_instances
-    command = ["python3", "main.py", sqd_file, coordinates_file, truth_table_file, "256"]
+    command = ["python3", "main.py", sqd_file, coordinates_file, truth_table_file, "100"]
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
     stdout, stderr = process.communicate()
 
@@ -26,6 +26,9 @@ def call_analysis():
     else:
         print("ERROR!")
         print(stderr)
+    
+    command = ["python3", "main.py", "-clean"]
+    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
         
 ## After this, it could be possible to grab the analysis and check what is going on with the outputs, example:
 ## - If in ONE case of the inputs, the output of the FIRST gate is 0 when it should be 1, you could try to: 
